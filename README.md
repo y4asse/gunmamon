@@ -35,3 +35,9 @@ ex) feat/add_login
 |フロント|https://github.com/y4asse/gunmamon/blob/main/README.md|
 |---|---|
 |API|https://github.com/y4asse/gunmamon/blob/main/backend/README.md|
+
+## Issueの切り方
+1人分が実装できる機能ごとにIssueを切ってください。
+それぞれ自分のやりたい機能があれば自由にIssueを切っても構いません！自分がやりたかったら自分をアサインしてください！
+
+すでにあるIssueを参考にしたり、テンプレートがあるのでそれに従ってIssueを切ってください。
