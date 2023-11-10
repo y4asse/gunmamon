@@ -30,3 +30,8 @@ ex) feat/add_login
 |フロント|https://gunmamon.vercel.app|
 |---|---|
 |API|https://high-wave-403814.an.r.appspot.com|
+
+## ドキュメント
+|フロント|https://github.com/y4asse/gunmamon/blob/main/README.md|
+|---|---|
+|API|https://github.com/y4asse/gunmamon/blob/main/backend/README.md|
