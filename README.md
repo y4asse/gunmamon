@@ -32,7 +32,7 @@ ex) feat/add_login
 |API|https://high-wave-403814.an.r.appspot.com|
 
 ## ドキュメント
-|フロント|https://github.com/y4asse/gunmamon/blob/main/README.md|
+|フロント|https://github.com/y4asse/gunmamon/blob/main/frontend/README.md|
 |---|---|
 |API|https://github.com/y4asse/gunmamon/blob/main/backend/README.md|
 
