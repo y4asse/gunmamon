@@ -72,7 +72,7 @@ ex) feat/add_login
   -d grant_type=authorization_code 
   https://accounts.google.com/o/oauth2/token
 ```
-※この手順は初回認証のみ可能。初回以降でaccess tokenを取得するには初回に渡されるrefresh tokenを利用して以下のリクエストを送る。
+※この手順は1つのcodeにつき1回のリクエストのみ可能。初回以降は400が返る。初回以降でaccess tokenを取得するには初回に渡されるrefresh tokenを利用して以下のリクエストを送る。
 ```
   curl 
   -d refresh_token=保存しておいたrefresh token
