@@ -46,3 +46,38 @@ ex) feat/add_login
 |フロント|releaseブランチにpush, mergeされたらVercelによって自動でデプロイされる|
 |---|---|
 |API|y4asseが手動でデプロイするので連絡してください|
+
+## アカウント認証とFit APIリクエストの流れ
+1. `/`Googleで認証を押すとGoogle認証のページへ飛ぶ
+2. `/callback`にリダイレクトされる
+3. URLのparamsに`code`があるので取得
+4. codeをもとにアクセストークンを取得
+```
+  curl 
+  -d code=3で取得した認可コード 
+  -d client_id=クライアントID
+  -d client_secret=クライアントシークレット
+  -dredirect_uri=リダイレクトURI
+  -d grant_type=authorization_code 
+  https://accounts.google.com/o/oauth2/token
+```
+※この手順は初回認証のみ可能。初回以降でaccess tokenを取得するには初回に渡されるrefresh tokenを利用して以下のリクエストを送る。
+```
+  curl 
+  -d refresh_token=保存しておいたrefresh token
+  -d client_id=クライアントID
+  -d client_secret=クライアントシークレット
+  -dredirect_uri=リダイレクトURI
+  -d grant_type=refresh_token 
+  https://accounts.google.com/o/oauth2/token
+```
+5. 4で取得したアクセストークンをもとにGoogle fit apiにリクエスト
+   <br/>
+これは歩数(iphone)を取得するリクエストの例
+```
+  https://www.googleapis.com/fitness/v1/users/me/dataSources/derived:com.google.step_count.delta:com.google.ios.fit:appleinc.:iphone:6fc8be7f:top_level/datasets/1699142400000000000-1699315200000000000
+
+  Headerに以下を含める
+  Authorization Bearer accessToken
+```
+
