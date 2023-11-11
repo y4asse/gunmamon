@@ -8,5 +8,7 @@ generator client {
 }
 
 model User {
-    id String @id @default(cuid()) @map("_id") @db.ObjectId
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    refreshToken String   @unique @db.String
+    createdAt    DateTime @default(now())
 }
