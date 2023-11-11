@@ -27,14 +27,14 @@ ex) feat/add_login
 ```
 ## URL
 
-|フロントサーバ|https://gunmamon.vercel.app|
+|フロントサーバ|APIサーバ|
 |---|---|
-|APIサーバ|https://high-wave-403814.an.r.appspot.com|
+|https://gunmamon.vercel.app|https://high-wave-403814.an.r.appspot.com|
 
 ## 📚ドキュメント
-|フロント README|https://github.com/y4asse/gunmamon/blob/main/frontend/README.md|
+|フロント README|API README|
 |---|---|
-|API README|https://github.com/y4asse/gunmamon/blob/main/backend/README.md|
+|https://github.com/y4asse/gunmamon/blob/main/frontend/README.md|https://github.com/y4asse/gunmamon/blob/main/backend/README.md|
 
 ## 機能ごとにIssueを切って開発を進めます
 1人分が実装できる機能ごとにIssueを切ってください。
