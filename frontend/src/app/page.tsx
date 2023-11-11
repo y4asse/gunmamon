@@ -1,5 +1,5 @@
 export default function Home() {
-  const redirect_uri = 'http://localhost:3000/callback'
+  const redirect_uri = process.env.NEXT_PUBLIC_REDIRECT_URI
   const client_id = '171244859464-tmrgdbtp4c26j6u8s5pd71o36utcdjbq.apps.googleusercontent.com'
   const scope = 'https://www.googleapis.com/auth/fitness.activity.read'
   const response_type = 'code'
