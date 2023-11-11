@@ -104,14 +104,16 @@ func IndexHandler(c echo.Context) error {
 	width := 10
 	wrapScope := 7
 	blank := 2
-	maxWidth := len(data) / wrapScope * (width + blank)
-	svg := `<svg width="` + strconv.Itoa(maxWidth) + `" height="` + strconv.Itoa((width+blank)*wrapScope) + `" xmlns="http://www.w3.org/2000/svg">
+	px := 30
+	py := 30
+	maxWidth := strconv.Itoa(len(data)/wrapScope*(width+blank) + px)
+	maxHeight := (width+blank)*wrapScope + py
+	svg := `<svg width="` + maxWidth + `" height="` + strconv.Itoa(maxHeight) + `" xmlns="http://www.w3.org/2000/svg">
     <rect width="100%" height="100%" fill="transparent" />`
 	for i, d := range data {
-		y := (i % wrapScope) * (width + blank)
-		x := (i / wrapScope) * (width + blank)
+		x := (i/wrapScope)*(width+blank) + px
+		y := (i%wrapScope)*(width+blank) + py
 		fill := "#0e4429"
-		// デフォルトの色
 		switch d {
 		case 3:
 			fill = "#006d32"
@@ -122,8 +124,29 @@ func IndexHandler(c echo.Context) error {
 		case 0:
 			fill = "#161b22"
 		}
-		svg += `<rect key="` + strconv.Itoa(i) + `" x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" width="` + strconv.Itoa(width) + `" height="` + strconv.Itoa(width) + `" fill="` + fill + `" rx="2" ry="2" />`
+		svg += `<rect key="` + strconv.Itoa(i) +
+			`" x="` + strconv.Itoa(x) +
+			`" y="` + strconv.Itoa(y) +
+			`" width="` + strconv.Itoa(width) +
+			`" height="` + strconv.Itoa(width) +
+			`" fill="` + fill +
+			`" rx="2" ry="2" style="animation: fadeInFromBottom 2s ease ` + strconv.FormatFloat(float64(float32(i)*0.001), 'f', -1, 32) + `s forwards; opacity: 0"/>`
 	}
+	svg += `
+		<text x="0" y="50" font-family="Arial" font-size="12" fill="black" style="animation: fadeIn 2s ease;">aon</text>
+		<text x="0" y="75" font-family="Arial" font-size="12" fill="black">Wed</text>
+		<text x="0" y="100" font-family="Arial" font-size="12" fill="black">Fri</text>
+		<style>
+			@keyframes fadeInFromBottom {
+				from { opacity: 0; transform: translateY(10px); }
+				to { opacity: 1;transform: translateY(0); }
+			}
+			@keyframes fadeIn {
+				from { opacity: 0; }
+				to { opacity: 1;}
+			}
+		</style>
+	`
 	svg += `</svg>`
 	return c.Blob(http.StatusOK, "image/svg+xml", []byte(svg))
 }
