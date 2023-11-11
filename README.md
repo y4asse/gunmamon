@@ -31,10 +31,16 @@ ex) feat/add_login
 |---|---|
 |https://gunmamon.vercel.app|https://high-wave-403814.an.r.appspot.com|
 
+<br>
+
 ## 📚ドキュメント
 |フロント README|API README|
 |---|---|
 |https://github.com/y4asse/gunmamon/blob/main/frontend/README.md|https://github.com/y4asse/gunmamon/blob/main/backend/README.md|
+
+
+<br>
+
 
 ## 🎄機能ごとにIssueを切って開発を進めます
 1人分が実装できる機能ごとにIssueを切ってください。
@@ -42,10 +48,15 @@ ex) feat/add_login
 
 すでにあるIssueを参考にしたり、テンプレートがあるのでそれに従ってIssueを切ってください。
 
+<br>
+
 ## 🐴デプロイの流れ
 |フロント|releaseブランチにpush, mergeされたらVercelによって自動でデプロイされる|
 |---|---|
 |API|y4asseが手動でデプロイするので連絡してください|
+
+<br>
+
 
 ## 🎴アカウント認証とFit APIリクエストの流れ
 1. `/`Googleで認証を押すとGoogle認証のページへ飛ぶ
@@ -80,4 +91,7 @@ ex) feat/add_login
   Headerに以下を含める
   Authorization Bearer accessToken
 ```
+
+<br>
+
 
