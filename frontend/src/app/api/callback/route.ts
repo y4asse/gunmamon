@@ -18,7 +18,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     },
     method: 'POST',
     cache: 'no-cache',
-    body: `code=${code}&grant_type=${grant_type}&redirect_uri=${redirect_uri}&client_secret=${client_secret}&client_id=${client_id}&scope=${scope}&approval_prompt=force`
+    body: `code=${code}&grant_type=${grant_type}&redirect_uri=${redirect_uri}&client_secret=${client_secret}&client_id=${client_id}&scope=${scope}`
   })
   const GoogleOAuthResponse = (await result.json()) as GoogleOAuthResponse
   console.log(GoogleOAuthResponse)
