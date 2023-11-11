@@ -25,7 +25,7 @@ chore/機能名
 
 ex) feat/add_login
 ```
-## URL
+## 📃URL
 
 |フロントサーバ|APIサーバ|
 |---|---|
@@ -36,18 +36,18 @@ ex) feat/add_login
 |---|---|
 |https://github.com/y4asse/gunmamon/blob/main/frontend/README.md|https://github.com/y4asse/gunmamon/blob/main/backend/README.md|
 
-## 機能ごとにIssueを切って開発を進めます
+## 🎄機能ごとにIssueを切って開発を進めます
 1人分が実装できる機能ごとにIssueを切ってください。
 それぞれ自分のやりたい機能があれば自由にIssueを切っても構いません！自分がやりたかったら自分をアサインしてください！
 
 すでにあるIssueを参考にしたり、テンプレートがあるのでそれに従ってIssueを切ってください。
 
-## デプロイの流れ
+## 🐴デプロイの流れ
 |フロント|releaseブランチにpush, mergeされたらVercelによって自動でデプロイされる|
 |---|---|
 |API|y4asseが手動でデプロイするので連絡してください|
 
-## アカウント認証とFit APIリクエストの流れ
+## 🎴アカウント認証とFit APIリクエストの流れ
 1. `/`Googleで認証を押すとGoogle認証のページへ飛ぶ
 2. `/callback`にリダイレクトされる
 3. URLのparamsに`code`があるので取得
