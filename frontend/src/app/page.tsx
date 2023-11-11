@@ -1,5 +1,5 @@
 export default function Home() {
-  const redirect_uri = process.env.NEXT_PUBLIC_REDIRECT_URI
+  const redirect_uri = process.env.REDIRECT_URI
   const client_id = '171244859464-tmrgdbtp4c26j6u8s5pd71o36utcdjbq.apps.googleusercontent.com'
   const scope = 'https://www.googleapis.com/auth/fitness.activity.read'
   const response_type = 'code'
@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <main className="">
-      <h1 className="text-3xl">ずんだもんデラックス２</h1>
+      <h1 className="text-3xl">ぐんまもんデラックス２</h1>
       <a href={googleAuthUrl}>Google認証</a>
     </main>
   )
