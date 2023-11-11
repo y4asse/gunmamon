@@ -58,7 +58,7 @@ ex) feat/add_login
 <br>
 
 
-## 🎴アカウント認証とFit APIリクエストの流れ
+## 🎴Googleでのアカウント認証とFit APIリクエストの流れ
 1. `/`Googleで認証を押すとGoogle認証のページへ飛ぶ
 2. `/callback`にリダイレクトされる
 3. URLのparamsに`code`があるので取得
@@ -91,6 +91,17 @@ ex) feat/add_login
   Headerに以下を含める
   Authorization Bearer accessToken
 ```
+
+### gunmamonでの実装
+1. `/`からGoogle認証ページ
+2. `/api/callback?code=ここにコード`にGoogleから飛ばされる
+3. codeをもとにリフレッシュトークンを取得
+4. データベースにリフレッシュトークンを格納し、IDを取得
+5. そのIDをもとにURLを発行する(↓例)
+```
+  https://example.com?id=取得したID&...&setp_count=true
+```
+6. そのURLにアクセスすると、IDをもとにリフレッシュトークンを取得→アクセストークンを取得→Google fit apiをたたいてデータを取得→それをもとにSVGを作成
 
 <br>
 
