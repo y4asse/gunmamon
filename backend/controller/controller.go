@@ -4,8 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gunmamon/model"
+	"io"
 	"net/http"
+	"net/url"
+	"os"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
@@ -26,10 +32,12 @@ func NewController(client *mongo.Client) IController {
 	return &controller{client}
 }
 
+// テスト用のエンドポイント
 func (controller *controller) Ok(c echo.Context) error {
 	return c.String(http.StatusOK, "ok")
 }
 
+// トップページのエンドポイント
 func (controller *controller) IndexHandler(c echo.Context) error {
 	client := controller.client
 	userCollection := client.Database("Cluster0").Collection("User")
@@ -55,10 +63,67 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 		panic(err)
 	}
 	// jsonから構造体への変換
+	user := model.User{}
+	if err := json.Unmarshal(jsonData, &user); err != nil {
+		return c.String(http.StatusInternalServerError, "json unmarshal error")
+	}
+	fmt.Println(user)
 
-	fmt.Println(string(jsonData))
-	//{"_id": "654f4152be05193dc750ed80","createdAt": "2023-11-11T08:54:42.043Z","refreshToken": "1//0eVvM-bSHHUFDCgYIARAAGA4SNwF-L9IrNTg-PAfGWiQhEpDNbKW83WXCMik-zf4-1UJLPsLz5gfz56o44-I75z3rGWIrbMeOGAI"}
+	// access tokenの取得
+	httpClient := &http.Client{}
+	oauthUrl := "https://accounts.google.com/o/oauth2/token"
+	encodeBody := url.Values{}
+	encodeBody.Add("refresh_token", user.RefreshToken)
+	encodeBody.Add("grant_type", "refresh_token")
+	encodeBody.Add("redirect_uri", os.Getenv("REDIRECT_URI"))
+	encodeBody.Add("client_secret", os.Getenv("CLIENT_SECRET"))
+	encodeBody.Add("client_id", os.Getenv("CLIENT_ID"))
+	encodeBody.Add("scope", "https://www.googleapis.com/auth/fitness.activity.read")
 
+	oauthReq, err := http.NewRequest("POST", oauthUrl, strings.NewReader(encodeBody.Encode()))
+	if err != nil {
+		fmt.Println("HTTP Request Failed:", err)
+		return c.String(http.StatusInternalServerError, "Internal server error : HTTP Request Failed")
+	}
+	oauthReq.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	restp, err := httpClient.Do(oauthReq)
+	if err != nil {
+		fmt.Println("HTTP Request Failed:", err)
+		return c.String(http.StatusInternalServerError, "Internal server error : HTTP Request Failed")
+	}
+	defer restp.Body.Close()
+	oauthBody, _ := io.ReadAll(restp.Body)
+
+	oauthResponse := model.OauthResponse{}
+	if err := json.Unmarshal(oauthBody, &oauthResponse); err != nil {
+		fmt.Println("json unmarshal error", err)
+		return c.String(http.StatusInternalServerError, "json unmarshal error")
+	}
+
+	//fit apiにリクエスト
+	from := time.Date(2023, 11, 4, 0, 0, 0, 0, time.UTC).UnixNano()
+	to := time.Date(2023, 11, 5, 0, 0, 0, 0, time.UTC).UnixNano() - 1
+	datasetId := fmt.Sprintf("%d-%d", from, to)
+	dataSourceId := "derived:com.google.step_count.delta:com.google.ios.fit:appleinc.:iphone:6fc8be7f:top_level"
+	token := oauthResponse.Access_token
+	url := fmt.Sprintf("https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%s", dataSourceId, datasetId)
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Add("Authorization", "Bearer "+token)
+	res, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Println("HTTP Request Failed:", err)
+		return c.String(http.StatusInternalServerError, "Internal server error : HTTP Request Failed")
+	}
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+	fitResponse := model.FitResponse{}
+	if err := json.Unmarshal(body, &fitResponse); err != nil {
+		fmt.Println("json unmarshal error", err)
+		return c.String(http.StatusInternalServerError, "json unmarshal error")
+	}
+	fmt.Println(fitResponse)
+
+	// 数値データ
 	data := []int{0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
 		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
 		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
@@ -68,7 +133,7 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
 		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 0}
 
-	width := 15
+	width := 10
 	wrapScope := 7
 	blank := 2
 	mx := 30
@@ -115,10 +180,11 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	// 曜日
 	content := []string{"Mon", "Wed", "Fri"}
 	for i, c := range content {
+		fontSize := 12
 		x := mx
-		y := my + 50 + i*25
+		y := py + fontSize + i*2*(width+blank) + width + blank
 		svg += `
-			<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="12" fill="black" style="animation: scale 1s ease;">` + c + `</text>
+			<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="` + strconv.Itoa(fontSize) + `" fill="black" style="animation: scale 1s ease;">` + c + `</text>
 		`
 	}
 
