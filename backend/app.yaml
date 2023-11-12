@@ -1,1 +1,4 @@
 runtime: go121
+
+includes:
+- secret.yaml
