@@ -67,7 +67,6 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	if err := json.Unmarshal(jsonData, &user); err != nil {
 		return c.String(http.StatusInternalServerError, "json unmarshal error")
 	}
-	fmt.Println(user)
 
 	// access tokenの取得
 	httpClient := &http.Client{}
@@ -101,12 +100,12 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	}
 
 	//fit apiにリクエスト
-	from := time.Date(2023, 11, 4, 0, 0, 0, 0, time.UTC).UnixNano()
-	to := time.Date(2023, 11, 5, 0, 0, 0, 0, time.UTC).UnixNano() - 1
-	datasetId := fmt.Sprintf("%d-%d", from, to)
+	from := time.Date(2023, 11, 4, 0, 0, 0, 0, time.Local).UnixNano()
+	to := time.Date(2023, 11, 5, 0, 0, 0, 0, time.Local).UnixNano() - 1
+	timeRange := fmt.Sprintf("%d-%d", from, to)
 	dataSourceId := "derived:com.google.step_count.delta:com.google.ios.fit:appleinc.:iphone:6fc8be7f:top_level"
 	token := oauthResponse.Access_token
-	url := fmt.Sprintf("https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%s", dataSourceId, datasetId)
+	url := fmt.Sprintf("https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%s", dataSourceId, timeRange)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", "Bearer "+token)
 	res, err := httpClient.Do(req)
@@ -122,6 +121,37 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "json unmarshal error")
 	}
 	fmt.Println(fitResponse)
+
+	// データの整形
+	if err != nil {
+		fmt.Println("strconv.ParseInt error", err)
+		return c.String(http.StatusInternalServerError, "strconv.ParseInt error")
+	}
+	jst, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		fmt.Println("time.LoadLocation error", err)
+		return c.String(http.StatusInternalServerError, "time.LoadLocation error")
+	}
+	for _, p := range fitResponse.Point {
+		intVal := p.Value[0].IntVal
+		// 日付に変換
+		startNanoTimeStamp, err := strconv.ParseInt(p.StartTimeNanos, 10, 64)
+		if err != nil {
+			fmt.Println("strconv.ParseInt error", err)
+			return c.String(http.StatusInternalServerError, "strconv.ParseInt error")
+		}
+		endNanoTimeStamp, err := strconv.ParseInt(p.EndTimeNanos, 10, 64)
+		if err != nil {
+			fmt.Println("strconv.ParseInt error", err)
+			return c.String(http.StatusInternalServerError, "strconv.ParseInt error")
+		}
+		startTimeJst := time.Unix(0, startNanoTimeStamp).In(jst)
+		endTimeJst := time.Unix(0, endNanoTimeStamp).In(jst)
+		// 日本時間に変換
+		// startTimeJst := startTimeUTC.Add(9 * time.Hour)
+		// endTimeJst := endTimeUTC.Add(9 * time.Hour)
+		fmt.Println(startTimeJst.Format("2006年01月02日 15時04分05秒") + " ~ " + endTimeJst.Format("2006年01月02日 15時04分05秒") + " : " + strconv.Itoa(intVal) + "歩")
+	}
 
 	// 数値データ
 	data := []int{0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,

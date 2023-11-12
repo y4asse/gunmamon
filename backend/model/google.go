@@ -9,6 +9,9 @@ type FitResponse struct {
 		EndTimeNanos   string `json:"endTimeNanos"`
 		DataTypeName   string `json:"dataTypeName"`
 	} `json:"point"`
+	MInStartTimeNs string `json:"minStartTimeNs"`
+	MaxEndTimeNs   string `json:"maxEndTimeNs"`
+	DataSourceId   string `json:"dataSourceId"`
 }
 
 type OauthResponse struct {
