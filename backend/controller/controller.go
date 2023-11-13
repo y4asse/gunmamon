@@ -100,8 +100,10 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	}
 
 	//fit apiにリクエスト
-	from := time.Date(2023, 11, 4, 0, 0, 0, 0, time.Local).UnixNano()
-	to := time.Date(2023, 11, 5, 0, 0, 0, 0, time.Local).UnixNano() - 1
+	// 期間は1年前から今日まで
+	now := time.Now().Local()
+	from := now.AddDate(-1, 0, 0).UnixNano()
+	to := now.UnixNano()
 	timeRange := fmt.Sprintf("%d-%d", from, to)
 	dataSourceId := "derived:com.google.step_count.delta:com.google.ios.fit:appleinc.:iphone:6fc8be7f:top_level"
 	token := oauthResponse.Access_token
@@ -120,7 +122,6 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 		fmt.Println("json unmarshal error", err)
 		return c.String(http.StatusInternalServerError, "json unmarshal error")
 	}
-	fmt.Println(fitResponse)
 
 	// データの整形
 	if err != nil {
@@ -132,6 +133,7 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 		fmt.Println("time.LoadLocation error", err)
 		return c.String(http.StatusInternalServerError, "time.LoadLocation error")
 	}
+	arrayData := [365]int{}
 	for _, p := range fitResponse.Point {
 		intVal := p.Value[0].IntVal
 		// 日付に変換
@@ -147,21 +149,28 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 		}
 		startTimeJst := time.Unix(0, startNanoTimeStamp).In(jst)
 		endTimeJst := time.Unix(0, endNanoTimeStamp).In(jst)
-		// 日本時間に変換
-		// startTimeJst := startTimeUTC.Add(9 * time.Hour)
-		// endTimeJst := endTimeUTC.Add(9 * time.Hour)
 		fmt.Println(startTimeJst.Format("2006年01月02日 15時04分05秒") + " ~ " + endTimeJst.Format("2006年01月02日 15時04分05秒") + " : " + strconv.Itoa(intVal) + "歩")
+
+		// 現在の日付とstartTimeJstの日付の差の日数を計算
+		nowDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, jst)
+		sub := nowDate.Sub(startTimeJst)
+		diffDay := int(sub.Hours() / 24)
+		arrayData[diffDay] += intVal
+
+		// 曜日を考慮する
+
 	}
+	fmt.Println(arrayData)
 
 	// 数値データ
-	data := []int{0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 0}
+	// data := []int{0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 0}
 
 	width := 10
 	wrapScope := 7
@@ -170,7 +179,7 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	my := 30
 	px := 30 + mx
 	py := 30 + my
-	maxWidth := strconv.Itoa(len(data)/wrapScope*(width+blank) + px + mx)
+	maxWidth := strconv.Itoa(len(arrayData)/wrapScope*(width+blank) + px + mx)
 	maxHeight := (width+blank)*wrapScope + py + my
 	bgColor := "white"
 
@@ -179,18 +188,17 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	svg += `<rect width="100%" height="100%" fill="` + bgColor + `" />`
 
 	// データの描画
-	for i, d := range data {
+	for i, d := range arrayData {
 		x := (i/wrapScope)*(width+blank) + px
 		y := (i%wrapScope)*(width+blank) + py
 		fill := "#0e4429"
-		switch d {
-		case 3:
+		if d >= 10000 {
 			fill = "#006d32"
-		case 2:
-			fill = "#26a641"
-		case 1:
+		} else if d >= 5000 {
+			fill = "#006d32"
+		} else if d >= 3000 {
 			fill = "#39d353"
-		case 0:
+		} else if d >= 1000 {
 			fill = "#161b22"
 		}
 		svg += `<rect key="` + strconv.Itoa(i) +
@@ -219,8 +227,8 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	}
 
 	// 月
-	month := []string{"Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"}
-	for i, m := range month {
+	months := []string{"Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"}
+	for i, m := range months {
 		x := px + 40*i
 		y := py - 2
 		svg += `<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="12" fill="black" style="animation: scale 1s ease;">` + m + `</text>`

@@ -12,6 +12,7 @@ type FitResponse struct {
 	MInStartTimeNs string `json:"minStartTimeNs"`
 	MaxEndTimeNs   string `json:"maxEndTimeNs"`
 	DataSourceId   string `json:"dataSourceId"`
+	NextPageToken  string `json:"nextPageToken"`
 }
 
 type OauthResponse struct {
