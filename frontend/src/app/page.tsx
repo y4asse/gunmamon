@@ -31,14 +31,14 @@ export default function Home() {
           </span>
           <LoginButton />
           <span className="mt-6 mb-7">
-            <p className="mb-1 text-sm text-gray mt-3">
+            <p className="mb-1 text-sm text-gray dark:text-white mt-3">
               プライバシーポリシーについては
               <Link className="underline" href={'/about/privacy'}>
                 こちら
               </Link>
               をご確認ください。
             </p>
-            <p className="mb-1 text-sm text-gray">
+            <p className="mb-1 text-sm text-gray dark:text-white">
               このサイトの詳細については
               <Link className="underline" href={'/about'}>
                 こちら
