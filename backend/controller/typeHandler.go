@@ -27,7 +27,7 @@ func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collectio
 	}
 
 	// TODO colorTypeによって色を変える
-	L0C := "#161b22"
+	L0C := "#EBEDF0"
 	L1C := "#0e4429"
 	L2C := "#006d32"
 	L3C := "#26a641"
