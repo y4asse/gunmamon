@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gunmamon/model"
 	"io"
+	"math"
 	"net/http"
 	"net/url"
 	"os"
@@ -32,6 +33,18 @@ func NewController(client *mongo.Client) IController {
 	return &controller{client}
 }
 
+const (
+	L0C = "#161b22"
+	L1C = "#0e4429"
+	L2C = "#006d32"
+	L3C = "#26a641"
+	L4C = "#39d353"
+	L4  = 10000
+	L3  = 5000
+	L2  = 3000
+	L1  = 1000
+)
+
 // テスト用のエンドポイント
 func (controller *controller) Ok(c echo.Context) error {
 	return c.String(http.StatusOK, "ok")
@@ -43,7 +56,18 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	userCollection := client.Database("Cluster0").Collection("User")
 	// パラメータの取得
 	id := c.QueryParam("id")
+	dataType := c.QueryParam("type")
+	if dataType == "" {
+		dataType = "step_count"
+	}
 
+	if dataType == "step_count" {
+		return stepCountHandler(id, c, userCollection)
+	}
+	return c.String(http.StatusBadRequest, "Bad Request")
+}
+
+func stepCountHandler(id string, c echo.Context, userCollection *mongo.Collection) error {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "Bad Request")
@@ -99,8 +123,7 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "json unmarshal error")
 	}
 
-	//fit apiにリクエスト
-	// 期間は1年前から今日まで
+	// fit apiにリクエスト
 	now := time.Now().Local()
 	from := now.AddDate(-1, 0, 0).UnixNano()
 	to := now.UnixNano()
@@ -133,7 +156,9 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 		fmt.Println("time.LoadLocation error", err)
 		return c.String(http.StatusInternalServerError, "time.LoadLocation error")
 	}
-	arrayData := [365]int{}
+
+	// 週ごとに分ける処理
+	arrayData := [53][7]int{}
 	for _, p := range fitResponse.Point {
 		intVal := p.Value[0].IntVal
 		// 日付に変換
@@ -147,30 +172,20 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 			fmt.Println("strconv.ParseInt error", err)
 			return c.String(http.StatusInternalServerError, "strconv.ParseInt error")
 		}
+
 		startTimeJst := time.Unix(0, startNanoTimeStamp).In(jst)
 		endTimeJst := time.Unix(0, endNanoTimeStamp).In(jst)
 		fmt.Println(startTimeJst.Format("2006年01月02日 15時04分05秒") + " ~ " + endTimeJst.Format("2006年01月02日 15時04分05秒") + " : " + strconv.Itoa(intVal) + "歩")
 
-		// 現在の日付とstartTimeJstの日付の差の日数を計算
-		nowDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, jst)
-		sub := nowDate.Sub(startTimeJst)
-		diffDay := int(sub.Hours() / 24)
-		arrayData[diffDay] += intVal
-
-		// 曜日を考慮する
-
+		// 配列のインデックスを計算
+		nowDate := time.Date(now.Local().Year(), now.Local().Month(), now.Local().Day(), 0, 0, 0, 0, jst)
+		nowWeekday := int(nowDate.Weekday()) // 0 : Sun, 1 : Mon, ...
+		subTime := nowDate.Sub(time.Date(startTimeJst.Year(), startTimeJst.Month(), startTimeJst.Day(), 0, 0, 0, 0, jst))
+		diffDayFromNow := int(subTime.Hours() / 24)
+		diffDayFromNowWeekSun := diffDayFromNow - nowWeekday
+		diffWeek := int(math.Ceil((float64(diffDayFromNowWeekSun) / 7)))
+		arrayData[diffWeek][startTimeJst.Weekday()] += intVal
 	}
-	fmt.Println(arrayData)
-
-	// 数値データ
-	// data := []int{0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-	// 	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 0}
 
 	width := 10
 	wrapScope := 7
@@ -179,7 +194,7 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	my := 30
 	px := 30 + mx
 	py := 30 + my
-	maxWidth := strconv.Itoa(len(arrayData)/wrapScope*(width+blank) + px + mx)
+	maxWidth := strconv.Itoa(len(arrayData)*7/wrapScope*(width+blank) + px + mx)
 	maxHeight := (width+blank)*wrapScope + py + my
 	bgColor := "white"
 
@@ -187,27 +202,41 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	svg := `<svg width="` + maxWidth + `" height="` + strconv.Itoa(maxHeight) + `" xmlns="http://www.w3.org/2000/svg">`
 	svg += `<rect width="100%" height="100%" fill="` + bgColor + `" />`
 
+	// 色の設定
+	L0C := "#161b22"
+	L1C := "#0e4429"
+	L2C := "#006d32"
+	L3C := "#26a641"
+	L4C := "#39d353"
+	L4 := 10000
+	L3 := 5000
+	L2 := 3000
+	L1 := 1000
+
 	// データの描画
-	for i, d := range arrayData {
-		x := (i/wrapScope)*(width+blank) + px
-		y := (i%wrapScope)*(width+blank) + py
-		fill := "#0e4429"
-		if d >= 10000 {
-			fill = "#006d32"
-		} else if d >= 5000 {
-			fill = "#006d32"
-		} else if d >= 3000 {
-			fill = "#39d353"
-		} else if d >= 1000 {
-			fill = "#161b22"
+	// arrayDataを逆から
+	for i, weekData := range arrayData {
+		x := (len(arrayData)-i-1)*(width+blank) + px
+		for j, d := range weekData {
+			fill := L0C
+			y := j*(width+blank) + py
+			if d >= L4 {
+				fill = L4C
+			} else if d >= L3 {
+				fill = L3C
+			} else if d >= L2 {
+				fill = L2C
+			} else if d >= L1 {
+				fill = L1C
+			}
+			svg += `<rect key="` + strconv.Itoa(i) +
+				`" x="` + strconv.Itoa(x) +
+				`" y="` + strconv.Itoa(y) +
+				`" width="` + strconv.Itoa(width) +
+				`" height="` + strconv.Itoa(width) +
+				`" fill="` + fill +
+				`" rx="2" ry="2" style="animation: fadeInFromBottom 1s ease ` + strconv.FormatFloat(float64(float32(i)*0.002), 'f', -1, 32) + `s forwards; opacity: 0"/>`
 		}
-		svg += `<rect key="` + strconv.Itoa(i) +
-			`" x="` + strconv.Itoa(x) +
-			`" y="` + strconv.Itoa(y) +
-			`" width="` + strconv.Itoa(width) +
-			`" height="` + strconv.Itoa(width) +
-			`" fill="` + fill +
-			`" rx="2" ry="2" style="animation: fadeInFromBottom 1s ease ` + strconv.FormatFloat(float64(float32(i)*0.002), 'f', -1, 32) + `s forwards; opacity: 0"/>`
 	}
 
 	// タイトル
@@ -227,13 +256,42 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	}
 
 	// 月
-	months := []string{"Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"}
+	months := [12]string{}
+	for i := 0; i < 12; i++ {
+		switch (int(now.Month()) + i + 1) % 12 {
+		case 0:
+			months[i] = "Dec"
+		case 1:
+			months[i] = "Jan"
+		case 2:
+			months[i] = "Feb"
+		case 3:
+			months[i] = "Mar"
+		case 4:
+			months[i] = "Apr"
+		case 5:
+			months[i] = "May"
+		case 6:
+			months[i] = "Jun"
+		case 7:
+			months[i] = "Jul"
+		case 8:
+			months[i] = "Aug"
+		case 9:
+			months[i] = "Sep"
+		case 10:
+			months[i] = "Oct"
+		case 11:
+			months[i] = "Nov"
+		}
+	}
 	for i, m := range months {
-		x := px + 40*i
+		x := px + (width+blank)*i*53/12
 		y := py - 2
 		svg += `<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="12" fill="black" style="animation: scale 1s ease;">` + m + `</text>`
 	}
 
+	// アニメーション
 	svg += `
 		<style>
 			@keyframes fadeInFromBottom {
