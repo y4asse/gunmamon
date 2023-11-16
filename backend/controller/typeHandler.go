@@ -20,7 +20,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collection, colorType string) error {
+func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collection, colorType string, bgColorType string) error {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "Bad Request")
@@ -28,14 +28,86 @@ func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collectio
 
 	// TODO colorTypeによって色を変える
 	L0C := "#EBEDF0"
-	L1C := "#0e4429"
-	L2C := "#006d32"
-	L3C := "#26a641"
-	L4C := "#39d353"
+	L1C := "#cc99ff"
+	L2C := "#9966cc"
+	L3C := "#6600cc" 
+	L4C := "#330066"
+	
+	switch colorType {
+	case "red":
+		L0C = "#EBEDF0"
+		L1C = "#cc9999"
+		L2C = "#cc6666"
+		L3C = "#cc3333"
+		L4C = "#cc0000"
+
+	case "pink":
+		L0C = "#EBEDF0"
+		L1C = "#ff99cc"
+		L2C = "#ff3399"
+		L3C = "#ff0066"
+		L4C = "#990033"
+
+	case "orange":
+		L0C = "#EBEDF0"
+		L1C = "#ff9966"
+		L2C = "#ff6600"
+		L3C = "#ff3300"
+		L4C = "#cc3300"
+
+	case "yellow":
+		L0C = "#EBEDF0"
+		L1C = "#ffcc66"
+		L2C = "#ffcc33"
+		L3C = "#cc9933"
+		L4C = "#cc9900"
+
+	case "green":
+		L0C = "#EBEDF0"
+		L1C = "#39d353"
+		L2C = "#6a641"
+		L3C = "#006d32" 
+		L4C = "#0e4429"
+
+	case "light-blue":
+		L0C = "#EBEDF0"
+		L1C = "#99ccff"
+		L2C = "#3399ff"
+		L3C = "#0066ff"
+		L4C = "#003399"
+
+	case "blue":
+		L0C = "#EBEDF0"
+		L1C = "#9999cc"
+		L2C = "#6666cc"
+		L3C = "#3333cc"
+		L4C = "#0000cc"
+
+	case "purple":
+		L0C = "#EBEDF0"
+		L1C = "#cc99ff"
+		L2C = "#9966cc"
+		L3C = "#6600cc"
+		L4C = "#330066"
+	}
+
+	bgColor := "white"
+
+	switch bgColorType {
+	case "light":
+		bgColor = "#ffffff"
+
+	case "dark":
+		bgColor = "#333333"
+	}
+
+
+	// 歩数の閾値
 	L4 := 10000
 	L3 := 5000
 	L2 := 3000
 	L1 := 1000
+
 
 	var result bson.M
 	err = userCollection.FindOne(context.TODO(), bson.D{{Key: "_id", Value: objID}}).Decode(&result)
@@ -160,7 +232,7 @@ func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collectio
 	py := 30 + my
 	maxWidth := strconv.Itoa(len(arrayData)*7/wrapScope*(width+blank) + px + mx)
 	maxHeight := (width+blank)*wrapScope + py + my
-	bgColor := "white"
+	
 
 	// svgの初期化
 	svg := `<svg width="` + maxWidth + `" height="` + strconv.Itoa(maxHeight) + `" xmlns="http://www.w3.org/2000/svg">`
