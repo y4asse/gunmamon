@@ -18,13 +18,13 @@ const Page = async ({ params }: { params: { id: string } }) => {
       <hr className="mt-10 text-yellow-200" />
 
       {/* GitHub用のURL */}
-      <div className="mt-14 text-center">
-        <h1 className="text-2xl font-bold text-center mb-5 ">あなたのURL</h1>
-        <div className="shadow-xl p-5 rounded-xl whitespace-nowrap bg-gray-400 my-5 overflow-x-auto">{`![https://gunmamon.vercel.app](https://high-wave-403814.an.r.appspot.com?id=${id})`}</div>
+      <div className="mt-10 text-center">
+        <h1 className="text-2xl font-bold text-center ">あなたのURL</h1>
+        <div className="shadow-xl p-5 rounded-xl whitespace-nowrap bg-gray-500 mt-2 mb-5 overflow-x-auto">{`![https://gunmamon.vercel.app](https://high-wave-403814.an.r.appspot.com?id=${id})`}</div>
         <div>
-          <button className="">コピーする</button>
+          <button className="rounded bg-indigo-500 py-1 px-4">コピーする</button>
         </div>
-        <div className="mt-10">TODO ここにGitHubに表示する説明を書く、、、</div>
+        {/* <div className="mt-10">TODO ここにGitHubに表示する説明を書く、、、</div> */}
       </div>
     </>
   )
