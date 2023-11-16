@@ -4,4 +4,5 @@ export type GoogleOAuthResponse = {
   refresh_token: string
   scope: string
   token_type: string
+  id_token: string
 }
