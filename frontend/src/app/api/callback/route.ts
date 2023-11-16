@@ -1,6 +1,5 @@
 import { GoogleOAuthResponse } from '@/types'
 import { db } from '@/utils/db'
-import { redirect } from 'next/navigation'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const GET = async (req: NextRequest, res: NextResponse) => {
@@ -27,7 +26,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     )}`
   })
   const GoogleOAuthResponse = (await result.json()) as GoogleOAuthResponse
-  const { refresh_token, access_token } = GoogleOAuthResponse
+  const { refresh_token, access_token, expires_in, id_token } = GoogleOAuthResponse
 
   //emailの取得
   const userInfo = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo`, {
@@ -42,17 +41,23 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       email: userInfo.email
     }
   })
+  let id: null | string = null
   if (dbUser) {
-    const { id } = dbUser
-    return redirect(`/${id}`)
+    id = dbUser.id
+  } else {
+    const newUser = await db.user.create({
+      data: {
+        refreshToken: refresh_token,
+        email: userInfo.email,
+        picture: userInfo.picture
+      }
+    })
+    id = newUser.id
   }
-  const newUser = await db.user.create({
-    data: {
-      refreshToken: GoogleOAuthResponse.refresh_token,
-      email: userInfo.email,
-      picture: userInfo.picture
+  return NextResponse.redirect(`${process.env.FRONT_URL}/${id}`, {
+    status: 302,
+    headers: {
+      'Set-Cookie': `session_token=${id_token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${expires_in}; Secure`
     }
   })
-  const { id } = newUser
-  return redirect(`/${id}`)
 }
