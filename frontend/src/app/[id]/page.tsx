@@ -15,6 +15,8 @@ const Page = async ({ params }: { params: { id: string } }) => {
         </div>
       </div>
 
+      <hr className="mt-10 text-yellow-200" />
+
       {/* GitHub用のURL */}
       <div className="mt-14 text-center">
         <h1 className="text-2xl font-bold text-center mb-5 ">あなたのURL</h1>
