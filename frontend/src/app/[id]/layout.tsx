@@ -9,16 +9,16 @@ const Layout = async ({ children, params }: { children: React.ReactNode; params:
     return redirect('/')
   }
   const { id } = params
-  // const user = await db.user.findUnique({
-  //   where: { id: id }
-  // })
-  const user = {
-    id: '6555e6241d4dd0926a7350bd',
-    refreshToken:
-      '1//0ea9VkITxeEPBCgYIARAAGA4SNwF-L9IrffI94C8yylxvbsuzrFcLccve5rtroW2WjPTSolBKRrzH_9dotHUSl6cd7u7nIQirbfU',
-    email: 'yasse0218@gmail.com',
-    picture: 'https://lh3.googleusercontent.com/a-/ALV-UjX0kN894CNP0W9gDTl8Me4jQ--dmA7J8oFmoycFMGKCmA=s96-c'
-  }
+  const user = await db.user.findUnique({
+    where: { id: id }
+  })
+  // const user = {
+  //   id: '6555e6241d4dd0926a7350bd',
+  //   refreshToken:
+  //     '1//0ea9VkITxeEPBCgYIARAAGA4SNwF-L9IrffI94C8yylxvbsuzrFcLccve5rtroW2WjPTSolBKRrzH_9dotHUSl6cd7u7nIQirbfU',
+  //   email: 'yasse0218@gmail.com',
+  //   picture: 'https://lh3.googleusercontent.com/a-/ALV-UjX0kN894CNP0W9gDTl8Me4jQ--dmA7J8oFmoycFMGKCmA=s96-c'
+  // }
   if (!user) {
     return notFound()
   }
