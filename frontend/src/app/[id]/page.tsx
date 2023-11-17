@@ -1,4 +1,24 @@
-import Person from '@/components/animation/Camping'
+import Person from '@/components/animation/Camping';
+import React from 'react';
+
+const Step = ({ color, title, content }) => {
+  const contentLines = content.split('<br>');
+  return (
+    <div className={`rounded-lg border p-2 bg-${color} mt-5 px-10`}>
+      <div className="mb-4 font-bold text-4xl">
+        {title}
+      </div>
+      <div className="m-2 font-normal">
+      {contentLines.map((line, index) => (
+          <React.Fragment key={index}>
+            {line}
+            <br />
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const { id } = params
@@ -24,7 +44,14 @@ const Page = async ({ params }: { params: { id: string } }) => {
         <div>
           <button className="rounded bg-indigo-500 py-1 px-4">コピーする</button>
         </div>
-        {/* <div className="mt-10">TODO ここにGitHubに表示する説明を書く、、、</div> */}
+        <div>
+          <Step color="blue-200" title="手順1" content="あああああああ<br>あああああ<br>あああああ<br>あああああ" />
+          <div className="m-2 font-bold">
+            ↓
+          </div>
+          <Step color="blue-300" title="手順2" content="あああああああ<br>あああああ<br>あああああ<br>あああああ" />
+          <div className="mb-5"></div>
+        </div> 
       </div>
     </>
   )
