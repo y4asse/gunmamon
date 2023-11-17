@@ -2,6 +2,7 @@ import { getServerSession } from '@/utils/useSession'
 import { notFound, redirect } from 'next/navigation'
 import React from 'react'
 import Tab from '@/components/mypage/Tab'
+import { db } from '@/utils/db'
 
 const Layout = async ({ children, params }: { children: React.ReactNode; params: { id: string } }) => {
   const data = await getServerSession()
