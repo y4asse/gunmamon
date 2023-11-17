@@ -96,10 +96,10 @@ ex) feat/add_login
 1. `/`からGoogle認証ページ
 2. `/api/callback?code=ここにコード`にGoogleから飛ばされる
 3. codeをもとにリフレッシュトークンを取得
-4. データベースにリフレッシュトークンを格納し、IDを取得
+4. データベースにリフレッシュトークンを格納し、IDを取得（マイページのUserIDってやつ）
 5. そのIDをもとにURLを発行する(↓例)
 ```
-  https://example.com?id=取得したID&...&setp_count=true
+  https://high-wave-403814.an.r.appspot.com?id=取得したID&color_type=カラーの種類&bg_color_type=背景の種類
 ```
 6. そのURLにアクセスすると、IDをもとにリフレッシュトークンを取得→アクセストークンを取得→Google fit apiをたたいてデータを取得→それをもとにSVGを作成
 
