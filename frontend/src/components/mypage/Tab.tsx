@@ -31,7 +31,7 @@ const Tab: React.FC<TabProps> = ({ id, user }) => {
           </Link>
         )
       })}
-      <Link href="/" className=" text-white">
+      <Link href={`/${id}/logout`} className=" text-white">
         ログアウト
       </Link>
       <Profile user={user} />
