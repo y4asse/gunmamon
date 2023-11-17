@@ -1,6 +1,5 @@
 'use client'
 
-import { Colors, colorTypes } from '@/app/[id]/createURL/page'
 import { HexColorPicker } from 'react-colorful'
 import SampleSvg from '../data/SampleSvg'
 import { useState } from 'react'
@@ -13,10 +12,10 @@ const CustomColor = ({
   setBgColor,
   setTextColor
 }: {
-  colorType: Colors
+  colorType: string
   bgColor: string
   textColor: string
-  setColorType: React.Dispatch<React.SetStateAction<Colors>>
+  setColorType: React.Dispatch<React.SetStateAction<string>>
   setBgColor: React.Dispatch<React.SetStateAction<string>>
   setTextColor: React.Dispatch<React.SetStateAction<string>>
 }) => {
@@ -25,7 +24,8 @@ const CustomColor = ({
     { name: '文字色', state: 'text' },
     { name: '背景色', state: 'bg' }
   ]
-  const selectColor = (color: Colors) => {
+  const colorTypes = ['red', 'pink', 'orange', 'yellow', 'green', 'light-blue', 'blue', 'purple'] as const
+  const selectColor = (color: string) => {
     switch (color) {
       case 'red':
         return '#e05d44'

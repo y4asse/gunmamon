@@ -3,12 +3,10 @@
 import CopyButton from '@/components/mypage/CopyButton'
 import CustomColor from '@/components/mypage/CustomColor'
 import React, { useState } from 'react'
-export const colorTypes = ['red', 'pink', 'orange', 'yellow', 'green', 'light-blue', 'blue', 'purple'] as const
-export type Colors = (typeof colorTypes)[number]
 
 const Page = ({ params }: { params: { id: string; url: string } }) => {
   const { id } = params
-  const [colorType, setColorType] = useState<Colors>('green')
+  const [colorType, setColorType] = useState<string>('green')
   const [bgColor, setBgColor] = useState('#ffffff')
   const [textColor, setTextColor] = useState('#000000')
   const url = `${process.env.NEXT_PUBLIC_API_URL}?id=${id}&color_type=${colorType}&bg_color=${bgColor}&text_color=${textColor}`
