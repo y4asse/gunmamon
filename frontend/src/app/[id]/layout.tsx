@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import React from 'react'
 import Tab from '@/components/mypage/Tab'
 import { db } from '@/utils/db'
+import Profile from '@/components/mypage/Profile'
 
 const Layout = async ({ children, params }: { children: React.ReactNode; params: { id: string } }) => {
   const data = await getServerSession()
@@ -10,8 +11,9 @@ const Layout = async ({ children, params }: { children: React.ReactNode; params:
     return redirect('/')
   }
   const { id } = params
+  // プロフィール情報を取得する処理を記述
   const user = await db.user.findUnique({
-    where: { id: id }
+    where: { id: params.id }
   })
   // const user = {
   //   id: '6555e6241d4dd0926a7350bd',
@@ -29,11 +31,16 @@ const Layout = async ({ children, params }: { children: React.ReactNode; params:
     return <div>invalid request</div>
   }
 
+  if (user.picture === null) {
+    user.picture = '' // null の場合、空文字列に変換するなどの処理を追加
+  }
+
   return (
     <main className="bg-primary min-h-screen text-white px-2 py-5">
       {/* profile */}
       <div className=" max-w-[900px] mx-auto mt-5">
-        <div className="flex justify-center items-center gap-5">
+        {/*ProFile.tsxにコンポーネント化した部分 */}
+        {/* <div className="flex justify-center items-center gap-5">
           <div>
             <img
               src={user.picture ? user.picture : ''}
@@ -44,8 +51,9 @@ const Layout = async ({ children, params }: { children: React.ReactNode; params:
             <h1 className="text-2xl font-bold">User ID</h1>
             <p>{id}</p>
           </div>
-        </div>
-        <Tab id={id} />
+        </div> */}
+        {/* <Profile user={user} /> */}
+        <Tab id={params.id} user={user} />
         {children}
       </div>
     </main>
