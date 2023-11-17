@@ -4,40 +4,10 @@ import { db } from '@/utils/db'
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const { id } = params
-  // const commits = await db.commit.findMany({
-  //   where: { user_id: id },
-  //   orderBy: { createdAt: 'desc' }
-  // })
-  const commits = [
-    {
-      id: 'string',
-      title: 'string',
-      message: 'string',
-      minitue: 2,
-      user_id: 'string',
-      createdAt: new Date(),
-      emoji: '💪'
-    },
-    {
-      id: 'string',
-      title: 'string',
-      message: 'string',
-      minitue: 2,
-      user_id: 'string',
-      createdAt: new Date(),
-      emoji: '💪'
-    },
-    {
-      id: 'string',
-      title: 'string',
-      message:
-        'あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ',
-      minitue: 2,
-      user_id: 'string',
-      createdAt: new Date(),
-      emoji: '💪'
-    }
-  ]
+  const commits = await db.commit.findMany({
+    where: { user_id: id },
+    orderBy: { createdAt: 'desc' }
+  })
   return (
     <div className="my-10">
       <h1 className="text-2xl font-bold text-center mb-5 ">運動をコミット</h1>
