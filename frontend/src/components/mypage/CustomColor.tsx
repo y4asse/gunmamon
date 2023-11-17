@@ -61,8 +61,8 @@ const CustomColor = ({
         {tabList.map((tab) => (
           <button
             key={tab.state}
-            className={`bg-white rounded-xl border-2 border-gray-400 py-1 px-5 ${
-              tab.state === state && 'text-white bg-[#888888]'
+            className={`rounded-xl border-2 border-gray-400 py-1 px-5 ${
+              tab.state === state ? 'text-white bg-[#888888]' : 'bg-white'
             }`}
             onClick={() => setState(tab.state)}
           >
