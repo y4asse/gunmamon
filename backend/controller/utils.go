@@ -46,12 +46,12 @@ func CreateSVG(arrayData [53][7]int, colorType string, bgColor string, textColor
 		L1C = "#ffcc66"
 		L2C = "#ffcc33"
 		L3C = "#cc9933"
-		L4C = "#cc9900"
+		L4C = "#977100"
 
 	case "green":
 		L0C = "#EBEDF0"
 		L1C = "#39d353"
-		L2C = "#6a641"
+		L2C = "#26a641"
 		L3C = "#006d32"
 		L4C = "#0e4429"
 
