@@ -20,22 +20,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collection, colorType string) error {
+func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collection, colorType string, bgColor string, textColor string) error {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "Bad Request")
 	}
-
-	// TODO colorTypeによって色を変える
-	L0C := "#EBEDF0"
-	L1C := "#0e4429"
-	L2C := "#006d32"
-	L3C := "#26a641"
-	L4C := "#39d353"
-	L4 := 10000
-	L3 := 5000
-	L2 := 3000
-	L1 := 1000
 
 	var result bson.M
 	err = userCollection.FindOne(context.TODO(), bson.D{{Key: "_id", Value: objID}}).Decode(&result)
@@ -131,15 +120,12 @@ func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collectio
 			fmt.Println("strconv.ParseInt error", err)
 			return c.String(http.StatusInternalServerError, "strconv.ParseInt error")
 		}
-		endNanoTimeStamp, err := strconv.ParseInt(p.EndTimeNanos, 10, 64)
 		if err != nil {
 			fmt.Println("strconv.ParseInt error", err)
 			return c.String(http.StatusInternalServerError, "strconv.ParseInt error")
 		}
 
 		startTimeJst := time.Unix(0, startNanoTimeStamp).In(jst)
-		endTimeJst := time.Unix(0, endNanoTimeStamp).In(jst)
-		fmt.Println(startTimeJst.Format("2006年01月02日 15時04分05秒") + " ~ " + endTimeJst.Format("2006年01月02日 15時04分05秒") + " : " + strconv.Itoa(intVal) + "歩")
 
 		// 配列のインデックスを計算
 		nowDate := time.Date(now.Local().Year(), now.Local().Month(), now.Local().Day(), 0, 0, 0, 0, jst)
@@ -151,117 +137,6 @@ func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collectio
 		arrayData[diffWeek][startTimeJst.Weekday()] += intVal
 	}
 
-	width := 10
-	wrapScope := 7
-	blank := 2
-	mx := 30
-	my := 30
-	px := 30 + mx
-	py := 30 + my
-	maxWidth := strconv.Itoa(len(arrayData)*7/wrapScope*(width+blank) + px + mx)
-	maxHeight := (width+blank)*wrapScope + py + my
-	bgColor := "white"
-
-	// svgの初期化
-	svg := `<svg width="` + maxWidth + `" height="` + strconv.Itoa(maxHeight) + `" xmlns="http://www.w3.org/2000/svg">`
-	svg += `<rect width="100%" height="100%" fill="` + bgColor + `" />`
-
-	// データの描画
-	// arrayDataを逆から
-	for i, weekData := range arrayData {
-		x := (len(arrayData)-i-1)*(width+blank) + px
-		for j, d := range weekData {
-			fill := L0C
-			y := j*(width+blank) + py
-			if d >= L4 {
-				fill = L4C
-			} else if d >= L3 {
-				fill = L3C
-			} else if d >= L2 {
-				fill = L2C
-			} else if d >= L1 {
-				fill = L1C
-			}
-			svg += `<rect key="` + strconv.Itoa(i) +
-				`" x="` + strconv.Itoa(x) +
-				`" y="` + strconv.Itoa(y) +
-				`" width="` + strconv.Itoa(width) +
-				`" height="` + strconv.Itoa(width) +
-				`" fill="` + fill +
-				`" rx="2" ry="2" style="animation: fadeInFromBottom 1s ease ` + strconv.FormatFloat(float64(float32(i)*0.002), 'f', -1, 32) + `s forwards; opacity: 0"/>`
-		}
-	}
-
-	// タイトル
-	title := "Step count"
-	svg += `
-		<text x="` + strconv.Itoa(mx) + `" y="` + strconv.Itoa(my) + `" font-family="Arial" font-size="20" fill="black" style="animation: scale 1s ease;">` + title + `</text>
-	`
-	// 曜日
-	content := []string{"Mon", "Wed", "Fri"}
-	for i, c := range content {
-		fontSize := 12
-		x := mx
-		y := py + fontSize + i*2*(width+blank) + width + blank
-		svg += `
-			<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="` + strconv.Itoa(fontSize) + `" fill="black" style="animation: scale 1s ease;">` + c + `</text>
-		`
-	}
-
-	// 月
-	months := [12]string{}
-	for i := 0; i < 12; i++ {
-		switch (int(now.Month()) + i + 1) % 12 {
-		case 0:
-			months[i] = "Dec"
-		case 1:
-			months[i] = "Jan"
-		case 2:
-			months[i] = "Feb"
-		case 3:
-			months[i] = "Mar"
-		case 4:
-			months[i] = "Apr"
-		case 5:
-			months[i] = "May"
-		case 6:
-			months[i] = "Jun"
-		case 7:
-			months[i] = "Jul"
-		case 8:
-			months[i] = "Aug"
-		case 9:
-			months[i] = "Sep"
-		case 10:
-			months[i] = "Oct"
-		case 11:
-			months[i] = "Nov"
-		}
-	}
-	for i, m := range months {
-		x := px + (width+blank)*i*53/12
-		y := py - 2
-		svg += `<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="12" fill="black" style="animation: scale 1s ease;">` + m + `</text>`
-	}
-
-	// アニメーション
-	svg += `
-		<style>
-			@keyframes fadeInFromBottom {
-				0% { opacity: 0; transform: translateY(10px); }
-				50% { opacity: 50%; transform: translateY(-10px); }
-				100% { opacity: 1;transform: translateY(0); }
-			}
-			@keyframes fadeIn {
-				from { opacity: 0; }
-				to { opacity: 1;}
-			}
-			@keyframes scale {
-				from { transform: scale(0); }
-				to { transform: scale(1); }
-          	}
-		</style>
-	`
-	svg += `</svg>`
+	svg := CreateSVG(arrayData, colorType, bgColor, textColor)
 	return c.Blob(http.StatusOK, "image/svg+xml", []byte(svg))
 }
