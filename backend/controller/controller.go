@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/mongo"
+	"fmt"
 )
 
 type IController interface {
@@ -22,6 +23,7 @@ func NewController(client *mongo.Client) IController {
 
 // テスト用のエンドポイント
 func (controller *controller) Ok(c echo.Context) error {
+	fmt.Println("ok desu")
 	return c.String(http.StatusOK, "ok")
 }
 
@@ -32,6 +34,7 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	// パラメータの取得
 	id := c.QueryParam("id")
 	colorType := c.QueryParam("color_type")
+	bgColorType := c.QueryParam("bg_color_type")
 	dataType := c.QueryParam("type")
 	if dataType == "" {
 		dataType = "step_count"
@@ -39,7 +42,7 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 
 	switch dataType {
 	case "step_count":
-		return StepCountHandler(id, c, userCollection, colorType)
+		return StepCountHandler(id, c, userCollection, colorType, bgColorType)
 		// TODO 心拍数の実装
 		// case "heart_beat":
 		// 	return HeartBeatHandler(id, c, userCollection, colorType)
