@@ -1,15 +1,13 @@
-import Person from '@/components/animation/Camping';
-import React from 'react';
+import Person from '@/components/animation/Camping'
+import React from 'react'
 
-const Step = ({ color, title, content }) => {
-  const contentLines = content.split('<br>');
+const Step = ({ color, title, content }: { color: any; title: any; content: any }) => {
+  const contentLines = content.split('<br>')
   return (
     <div className={`rounded-lg border p-2 bg-${color} mt-5 px-10`}>
-      <div className="mb-4 font-bold text-4xl">
-        {title}
-      </div>
+      <div className="mb-4 font-bold text-4xl">{title}</div>
       <div className="m-2 font-normal">
-      {contentLines.map((line, index) => (
+        {contentLines.map((line: any, index: any) => (
           <React.Fragment key={index}>
             {line}
             <br />
@@ -17,7 +15,7 @@ const Step = ({ color, title, content }) => {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 const Page = async ({ params }: { params: { id: string } }) => {
@@ -46,12 +44,10 @@ const Page = async ({ params }: { params: { id: string } }) => {
         </div>
         <div>
           <Step color="blue-200" title="手順1" content="あああああああ<br>あああああ<br>あああああ<br>あああああ" />
-          <div className="m-2 font-bold">
-            ↓
-          </div>
+          <div className="m-2 font-bold">↓</div>
           <Step color="blue-300" title="手順2" content="あああああああ<br>あああああ<br>あああああ<br>あああああ" />
           <div className="mb-5"></div>
-        </div> 
+        </div>
       </div>
     </>
   )
