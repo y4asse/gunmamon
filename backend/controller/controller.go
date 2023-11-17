@@ -38,15 +38,15 @@ func (controller *controller) SampleHandler(c echo.Context) error {
 	sampleData := [53][7]int{}
 	for i := 0; i < 53; i++ {
 		if i < 10 {
-			sampleData[i] = [7]int{0, 0, 0, 0, 0, 0, 0}
+			sampleData[i] = [7]int{100001, 100001, 100001, 100001, 100001, 100001, 100001}
 		} else if i < 20 {
-			sampleData[i] = [7]int{1001, 1001, 1001, 1001, 1001, 1001, 1001}
+			sampleData[i] = [7]int{5001, 5001, 5001, 5001, 5001, 5001, 5001}
 		} else if i < 30 {
 			sampleData[i] = [7]int{3001, 3001, 3001, 3001, 3001, 3001, 3001}
 		} else if i < 40 {
-			sampleData[i] = [7]int{5001, 5001, 5001, 5001, 5001, 5001, 5001}
+			sampleData[i] = [7]int{1001, 1001, 1001, 1001, 1001, 1001, 1001}
 		} else {
-			sampleData[i] = [7]int{100001, 100001, 100001, 100001, 100001, 100001, 100001}
+			sampleData[i] = [7]int{0, 0, 0, 0, 0, 0, 0}
 
 		}
 	}
