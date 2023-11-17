@@ -20,7 +20,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collection, colorType string, bgColorType string) error {
+func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collection, colorType string, bgColor string, textColor string) error {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "Bad Request")
@@ -137,6 +137,6 @@ func StepCountHandler(id string, c echo.Context, userCollection *mongo.Collectio
 		arrayData[diffWeek][startTimeJst.Weekday()] += intVal
 	}
 
-	svg := CreateSVG(arrayData, colorType, bgColorType)
+	svg := CreateSVG(arrayData, colorType, bgColor, textColor)
 	return c.Blob(http.StatusOK, "image/svg+xml", []byte(svg))
 }
