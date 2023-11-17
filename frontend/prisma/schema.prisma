@@ -13,4 +13,16 @@ model User {
     email        String   @unique
     picture      String?
     createdAt    DateTime @default(now())
+    Commit       Commit[]
+}
+
+model Commit {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    title     String
+    message   String?
+    minitue   Int
+    user      User     @relation(fields: [user_id], references: [id])
+    user_id   String   @map("user_id") @db.ObjectId
+    emoji     String
+    createdAt DateTime @default(now())
 }
