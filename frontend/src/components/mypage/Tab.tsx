@@ -11,7 +11,6 @@ const Tab = ({ id }: { id: string }) => {
     { name: '草を観る', href: `/${id}/kusa` }
   ]
   const path = usePathname()
-  console.log(path)
   return (
     <div className="border-b-2 border-white p-5 mt-5 flex gap-5">
       {tabs.map((item, i) => {

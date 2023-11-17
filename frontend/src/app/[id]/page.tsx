@@ -1,4 +1,4 @@
-import Person from '@/components/mypage/Camping'
+import Person from '@/components/animation/Camping'
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const { id } = params

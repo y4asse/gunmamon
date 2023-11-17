@@ -3,8 +3,8 @@
 import React from 'react'
 import Lottie from 'lottie-react'
 import animation from '../../../public/animation.json'
-const Person = () => {
+const Camping = () => {
   return <Lottie animationData={animation} />
 }
 
-export default Person
+export default Camping
