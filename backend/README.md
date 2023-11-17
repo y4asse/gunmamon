@@ -27,6 +27,9 @@ docker-compose up
 
 ```/ok``` 環境構築やデプロイのテストに使う
 
+```sample``` サンプルAPI
+`/sample?color_type=purple&bg_color=fffff&text_color=ffffff`のようにリクエスト
+
 # 📁フォルダ構成
 ```main.go``` サーバを作成する
 
