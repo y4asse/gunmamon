@@ -62,7 +62,7 @@ const CustomColor = ({
           <button
             key={tab.state}
             className={`bg-white rounded-xl border-2 border-gray-400 py-1 px-5 ${
-              tab.state === state && 'text-white bg-gray-700'
+              tab.state === state && 'text-white bg-[#888888]'
             }`}
             onClick={() => setState(tab.state)}
           >
@@ -70,6 +70,8 @@ const CustomColor = ({
           </button>
         ))}
       </div>
+
+      {/* 草の色 */}
       {state === 'glass' && (
         <div className="flex justify-evenly rounded-xl flex-wrap gap-3 py-10">
           {colorTypes.map((color) => (
@@ -78,13 +80,17 @@ const CustomColor = ({
               role="button"
               key={color}
               style={{ backgroundColor: selectColor(color) }}
-              className={`border border-gray-400 p-5 rounded-xl w-[200px] h-[100px] flex justify-center items-center`}
+              className={`border border-gray-400 p-5 rounded-xl w-[200px] h-[100px] flex justify-center items-center ${
+                colorType === color && 'ring-4 ring-black'
+              }}`}
             >
               {color}
             </div>
           ))}
         </div>
       )}
+
+      {/* 文字色 */}
       {state === 'text' && (
         <div className="flex justify-evenly py-10">
           <div className="bg-white rounded-xl border-2 border-gray-400">
@@ -92,6 +98,8 @@ const CustomColor = ({
           </div>
         </div>
       )}
+
+      {/* 背景色 */}
       {state === 'bg' && (
         <div className="flex justify-evenly py-10">
           <div className="bg-white rounded-xl border-2 border-gray-400">
