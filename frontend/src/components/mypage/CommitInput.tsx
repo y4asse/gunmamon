@@ -4,7 +4,7 @@ import { insert } from '@/app/action'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import Picker, { EmojiClickData } from 'emoji-picker-react'
-import { useRef, useState } from 'react'
+import { use, useRef, useState, useEffect } from 'react'
 import Check from '../animation/Check'
 
 export type Inputs = {
@@ -23,6 +23,26 @@ const CommitInput = ({ id }: { id: string }) => {
     unified: ''
   })
   const [isOpenPicker, setIsOpenPicker] = useState<boolean>(false)
+
+  // 絵文字ピッカーの枠外をクリックしたら閉じる
+  const useOutsideClick = (ref, callback) => {
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (ref.current && !ref.current.contains(e.target)) {
+          callback()
+        }
+      }
+      document.addEventListener('click', handleClickOutside);
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }, [ref, callback]);
+  }
+  const pickerRef = useRef();
+
+  useOutsideClick(pickerRef, () => {
+    if(isOpenPicker) setIsOpenPicker(false);
+  });
 
   const handleEmojiClick = (emoji: EmojiClickData) => {
     setEmojiData(emoji)
@@ -70,11 +90,13 @@ const CommitInput = ({ id }: { id: string }) => {
           <span className="text-[100px]">{emojiData.emoji}</span>
           <p className="bg-gray-100 py-1">絵文字を変更</p>
         </div>
+        <div ref={pickerRef}>
         {isOpenPicker && (
           <div className="absolute right-1/2 translate-x-1/2 mt-5">
             <Picker onEmojiClick={handleEmojiClick} />
           </div>
         )}
+        </div>
         <div className="">
           <label className="text-xl text-white p-1">タイトル</label>
           <input
@@ -93,6 +115,7 @@ const CommitInput = ({ id }: { id: string }) => {
           <input
             className="border rounded px-3 py-1"
             type="number"
+            min={0}
             {...register('minitue', { valueAsNumber: true, required: 'コミット時間を入力してください' })}
             defaultValue={0}
           />
