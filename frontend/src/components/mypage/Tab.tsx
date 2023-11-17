@@ -7,6 +7,7 @@ import React from 'react'
 const Tab = ({ id }: { id: string }) => {
   const tabs = [
     { name: 'ホーム', href: `/${id}` },
+    { name: 'URL作成', href: `/${id}/createURL` },
     { name: '記録する', href: `/${id}/commit` },
     { name: '草を観る', href: `/${id}/kusa` }
   ]
