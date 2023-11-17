@@ -10,5 +10,6 @@ func NewRouter(controller controller.IController) *echo.Echo {
 	e := echo.New()
 	e.GET("/ok", controller.Ok)
 	e.GET("/", controller.IndexHandler)
+	e.GET("/sample", controller.SampleHandler)
 	return e
 }
