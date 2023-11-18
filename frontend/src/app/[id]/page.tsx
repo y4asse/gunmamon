@@ -67,12 +67,6 @@ const Page = async ({ params }: { params: { id: string } }) => {
 
       {/* GitHub用のURL */}
       <div className="mt-10 text-center">
-        <h1 className="text-2xl font-bold text-center ">あなたのURL</h1>
-        <div className="shadow-xl p-5 rounded-xl whitespace-nowrap bg-gray-500 mt-2 mb-5 overflow-x-auto">{`![https://gunmamon.vercel.app](https://high-wave-403814.an.r.appspot.com?id=${id})`}</div>
-        <div>
-          <button className="rounded bg-indigo-500 py-1 px-4">コピーする</button>
-        </div>
-        <div>
 
           <Step color="blue-300" title="手順1" contents={
             ["[]の中身を埋めて、以下のURLにアクセスする。<br>https://high-wave-403814.an.r.appspot.com/?id=[あなたのUID]&color_type=[草の色]&bg_color_type=[背景の色]"
@@ -89,7 +83,6 @@ const Page = async ({ params }: { params: { id: string } }) => {
           </div>
           <Step color="blue-200" title="手順3" contents={
           ["手順1のURLをimgタグに入れ、readmeに貼り付ける<br><img src=[URL] />"
-          ,"https://www.pokemon.co.jp/ex/sv/assets/img/pokemon/220227_02/visual.png"
           ]
           } width="50" height="50" />
           <div className="mb-5"></div>
