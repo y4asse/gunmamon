@@ -48,13 +48,31 @@ const Step = ({ color, title, contents, width, height }) => {
   );
 }
 
+const About = ({ color, title, contents}) => {
+  return (
+    <div className={`border-t border-side p-2 bg-${color} mt-5 px-10`}>
+      <div className="mb-4 font-bold text-4xl text-center">
+      <span className="text-red-500">{title}</span>とは...
+      </div>
+      <div className="m-2 font-normal text-center">
+        {contents.split('<br>').map((sentence, index) => (
+          <React.Fragment key={index}>
+            {sentence}
+            <br />
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const Page = async ({ params }: { params: { id: string } }) => {
   const { id } = params
   return (
     <>
       <div className="text-center mt-10 flex justify-center items-center flex-wrap gap-3">
         <h1 className="text-2xl md:w-[50%] w-full font-bold">
-          <span className="text-yellow-200">ぐんまもん</span>はあなたの
+          <span className="text-yellow-200">Git Active</span>はあなたの
           <br />
           運動不足解消をサポートしますwwwww
         </h1>
@@ -62,7 +80,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
           <Person />
         </div>
       </div>
-
+      <About color="blue-300" title="Git Active" contents="運動量を草で表すことで、日々の運動を可視化するアプリです。<br>GoogleFitとの連携により、歩いた分だけ草が生えます。" />
       <hr className="mt-10 text-yellow-200" />
 
       {/* GitHub用のURL */}
