@@ -1,21 +1,51 @@
-import Person from '@/components/animation/Camping'
-import React from 'react'
+import Person from '@/components/animation/Camping';
+import React from 'react';
 
-const Step = ({ color, title, content }: { color: any; title: any; content: any }) => {
-  const contentLines = content.split('<br>')
+const Step = ({ color, title, contents, width, height }) => {
+  const isImage = (url) => {
+    const extension = url.split('.').pop().toLowerCase();
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+    return imageExtensions.includes(extension);
+  };
+  const imageStyle = {
+    width: width ? `${width}px` : 'auto',
+    height: height ? `${height}px` : 'auto',
+    maxWidth: '100%',
+    maxHeight: '100%',
+  };
+
+  const DOMs = contents.map((item, index) => (
+    <React.Fragment key={index}>
+      {!isImage(item) ? (
+        <div className="m-2 font-normal">
+          {item.split('<br>').map((sentence, index) => (
+            <React.Fragment key={index}>
+              {sentence}
+              <br />
+            </React.Fragment>
+          ))}
+        </div>
+      ) : (
+        <img
+          src={item}
+          className="m-2 mx-auto"
+          style={imageStyle}
+        />
+      )}
+      <br />
+    </React.Fragment>
+  ));
+
   return (
     <div className={`rounded-lg border p-2 bg-${color} mt-5 px-10`}>
-      <div className="mb-4 font-bold text-4xl">{title}</div>
+      <div className="mb-4 font-bold text-4xl">
+        {title}
+      </div>
       <div className="m-2 font-normal">
-        {contentLines.map((line: any, index: any) => (
-          <React.Fragment key={index}>
-            {line}
-            <br />
-          </React.Fragment>
-        ))}
+        {DOMs}
       </div>
     </div>
-  )
+  );
 }
 
 const Page = async ({ params }: { params: { id: string } }) => {
@@ -37,20 +67,28 @@ const Page = async ({ params }: { params: { id: string } }) => {
 
       {/* GitHub用のURL */}
       <div className="mt-10 text-center">
-        <h1 className="text-2xl font-bold text-center ">あなたのURL</h1>
-        <div className="shadow-xl p-5 rounded-xl whitespace-nowrap bg-gray-500 mt-2 mb-5 overflow-x-auto">{`![https://gunmamon.vercel.app](https://high-wave-403814.an.r.appspot.com?id=${id})`}</div>
-        <div>
-          <button className="rounded bg-indigo-500 py-1 px-4">コピーする</button>
-        </div>
-        <div>
-          <Step color="blue-200" title="手順1" content="あああああああ<br>あああああ<br>あああああ<br>あああああ" />
-          <div className="m-2 font-bold">↓</div>
-          <Step color="blue-300" title="手順2" content="あああああああ<br>あああああ<br>あああああ<br>あああああ" />
+
+          <Step color="blue-300" title="手順1" contents={
+            ["[]の中身を埋めて、以下のURLにアクセスする。<br>https://high-wave-403814.an.r.appspot.com/?id=[あなたのUID]&color_type=[草の色]&bg_color_type=[背景の色]"
+          ]} width="50" height="50" />
+          <div className="m-2 font-bold">
+            ↓
+          </div>
+          <Step color="blue-200" title="手順2" contents={
+          ["草の画像が出てくることを確認する<br>↓サンプル"
+          ,"../../../../../kusa.png"
+          ]} width="300" height="100" />
+          <div className="m-2 font-bold">
+            ↓
+          </div>
+          <Step color="blue-200" title="手順3" contents={
+          ["手順1のURLをimgタグに入れ、readmeに貼り付ける<br><img src=[URL] />"
+          ]
+          } width="50" height="50" />
           <div className="mb-5"></div>
-        </div>
       </div>
     </>
   )
 }
 
-export default Page
+export default Page;
