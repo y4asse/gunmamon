@@ -54,9 +54,9 @@ const Step = ({
 
 const About = ({ color, title, contents }: { color: string; title: string; contents: string }) => {
   return (
-    <div className={`border-t border-side p-2 bg-${color} mt-5 px-10`}>
-      <div className="mb-4 font-bold text-4xl text-center">
-        <span className="text-red-500">{title}</span>とは...
+    <div className={`border-t border-side p-2 bg-${color} mt-12 px-20`}>
+      <div className="mb-4 font-bold text-4xl text-center mt-5">
+        <span className="text-indigo-500">{title}</span>とは...
       </div>
       <div className="m-2 font-normal text-center">
         {contents.split('<br>').map((sentence, index) => (
@@ -75,12 +75,12 @@ const Page = async ({ params }: { params: { id: string } }) => {
   return (
     <>
       <div className="text-center mt-10 flex justify-center items-center flex-wrap gap-3">
-        <h1 className="text-2xl md:w-[50%] w-full font-bold">
-          <span className="text-yellow-200">Git Active</span>はあなたの
+        <h1 className="text-2xl md:w-[50%] w-full font-bold mt-5">
+          <span className="text-indigo-500">Git Active</span>はあなたの
           <br />
-          運動不足解消をサポートしますwwwww
+          運動不足解消をサポートします
         </h1>
-        <div className="w-[300px] h-[300px] mx-auto mt-5">
+        <div className="w-[300px] h-[300px] mx-auto pt-10 mt-5">
           <Person />
         </div>
       </div>
@@ -89,7 +89,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
         title="Git Active"
         contents="運動量を草で表すことで、日々の運動を可視化するアプリです。<br>GoogleFitとの連携により、歩いた分だけ草が生えます。"
       />
-      <hr className="mt-10 text-yellow-200" />
+      <hr className="mt-10 text-indigo-500" />
 
       {/* GitHub用のURL */}
       <div className="mt-10 text-center">
