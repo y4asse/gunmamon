@@ -32,7 +32,8 @@ func (controller *controller) Ok(c echo.Context) error {
 // サンプルページのエンドポイント
 func (controller *controller) SampleHandler(c echo.Context) error {
 	colorType := c.QueryParam("color_type")
-	bgColorType := c.QueryParam("bg_color_type")
+	bgColor := c.QueryParam("bg_color")
+	textColor := c.QueryParam("text_color")
 
 	// サンプルデータの作成
 	sampleData := [53][7]int{}
@@ -50,7 +51,7 @@ func (controller *controller) SampleHandler(c echo.Context) error {
 
 		}
 	}
-	svg := CreateSVG(sampleData, colorType, bgColorType)
+	svg := CreateSVG(sampleData, colorType, bgColor, textColor)
 	return c.Blob(http.StatusOK, "image/svg+xml", []byte(svg))
 }
 
@@ -61,7 +62,8 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	// パラメータの取得
 	id := c.QueryParam("id")
 	colorType := c.QueryParam("color_type")
-	bgColorType := c.QueryParam("bg_color_type")
+	bgColor := c.QueryParam("bg_color")
+	textColor := c.QueryParam("text_color")
 	dataType := c.QueryParam("type")
 	if dataType == "" {
 		dataType = "step_count"
@@ -69,7 +71,7 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 
 	switch dataType {
 	case "step_count":
-		return StepCountHandler(id, c, userCollection, colorType, bgColorType)
+		return StepCountHandler(id, c, userCollection, colorType, bgColor, textColor)
 		// TODO 心拍数の実装
 		// case "heart_beat":
 		// 	return HeartBeatHandler(id, c, userCollection, colorType)

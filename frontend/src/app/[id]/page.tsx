@@ -28,7 +28,6 @@ const Step = ({ color, title, contents, width, height }) => {
       ) : (
         <img
           src={item}
-          alt={`Custom Image ${index}`}
           className="m-2 mx-auto"
           style={imageStyle}
         />
@@ -74,19 +73,23 @@ const Page = async ({ params }: { params: { id: string } }) => {
           <button className="rounded bg-indigo-500 py-1 px-4">コピーする</button>
         </div>
         <div>
-          <Step color="blue-200" title="手順1" contents={
-            ["あああああああ<br>あああああ<br>あああああ<br>あああああ"
-          ,"https://www.pokemon.co.jp/ex/sv/assets/img/pokemon/220227_02/visual.png"
-          ,"あああああああ<br>あああああ<br>あああああ<br>あああああ"
+          <Step color="blue-300" title="手順1" contents={
+            ["[]の中身を埋めて、以下のURLにアクセスする。<br>https://high-wave-403814.an.r.appspot.com/?id=[あなたのUID]&color_type=[草の色]&bg_color_type=[背景の色]"
           ]} width="50" height="50" />
           <div className="m-2 font-bold">
             ↓
           </div>
-          <Step color="blue-200" title="手順1" contents={
-          ["あああああああ<br>あああああ<br>あああああ<br>あああああ"
+          <Step color="blue-200" title="手順2" contents={
+          ["草の画像が出てくることを確認する<br>↓サンプル"
+          ,"../../../../../kusa.png"
+          ]} width="300" height="100" />
+          <div className="m-2 font-bold">
+            ↓
+          </div>
+          <Step color="blue-200" title="手順3" contents={
+          ["手順1のURLをimgタグに入れ、readmeに貼り付ける<br><img src=[URL] />"
           ,"https://www.pokemon.co.jp/ex/sv/assets/img/pokemon/220227_02/visual.png"
-          ]
-          } width="50" height="50" />
+          ]} width="50" height="50" />
           <div className="mb-5"></div>
         </div> 
       </div>
@@ -94,4 +97,4 @@ const Page = async ({ params }: { params: { id: string } }) => {
   )
 }
 
-export default Page
+export default Page;
