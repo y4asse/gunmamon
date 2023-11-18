@@ -19,35 +19,24 @@ const Tab: React.FC<TabProps> = ({ id, user }) => {
     { name: 'ホーム', href: `/${id}` },
     { name: 'URL作成', href: `/${id}/createURL` },
     { name: '記録する', href: `/${id}/commit` },
-    { name: '草を観る', href: `/${id}/kusa` }
+    { name: '草を観る', href: `/${id}/kusa` },
+    { name: '目標設定', href: `/${id}/goal`}
   ]
   const path = usePathname()
   return (
-    <>
-      <div className="flex justify-end items-center gap-5 font-bold">
-        <div className="flex gap-5 mt-7 mb-7">
-          {tabs.map((item, i) => {
-            return (
-              <Link
-                key={i}
-                href={`${item.href}`}
-                className={`text-white ${
-                  path === item.href ? 'text-purple-500 hover:text-purple-500' : 'hover:text-purple-500'
-                }`}
-              >
-                {item.name}
-              </Link>
-            )
-          })}
-          <Link href={`/${id}/logout`} className=" text-white hover:text-purple-500">
-            ログアウト
+    <div className="p-5 mt-5 flex gap-5">
+      {tabs.map((item, i) => {
+        return (
+          <Link key={i} href={`${item.href}`} className={`text-white ${path === item.href ? 'text-purple-500' : ''}`}>
+            {item.name}
           </Link>
-        </div>
-        <div>
-          <Profile user={user} />
-        </div>
-      </div>
-    </>
+        )
+      })}
+      <Link href={`/${id}/logout`} className=" text-white">
+        ログアウト
+      </Link>
+      <Profile user={user} />
+    </div>
   )
 }
 
