@@ -1,5 +1,5 @@
-import Person from '@/components/animation/Camping';
-import React from 'react';
+import Person from '@/components/animation/Camping'
+import React from 'react'
 
 const Step = ({ color, title, contents, width, height }) => {
   const isImage = (url) => {
@@ -39,14 +39,12 @@ const Step = ({ color, title, contents, width, height }) => {
 
   return (
     <div className={`rounded-lg border p-2 bg-${color} mt-5 px-10`}>
-      <div className="mb-4 font-bold text-4xl">
-        {title}
-      </div>
+      <div className="mb-4 font-bold text-4xl">{title}</div>
       <div className="m-2 font-normal">
         {DOMs}
       </div>
     </div>
-  );
+  )
 }
 
 const Page = async ({ params }: { params: { id: string } }) => {
@@ -88,7 +86,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
           ]
           } width="50" height="50" />
           <div className="mb-5"></div>
-        </div> 
+        </div>
       </div>
     </>
   )

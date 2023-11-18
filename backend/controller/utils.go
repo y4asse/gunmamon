@@ -5,7 +5,14 @@ import (
 	"time"
 )
 
-func CreateSVG(arrayData [53][7]int, colorType string, bgColorType string) string {
+func CreateSVG(arrayData [53][7]int, colorType string, bgColor string, textColor string) string {
+	// textColor="#ffffff" みたいな感じでくる
+	if bgColor == "" {
+		bgColor = "#ffffff" // 白
+	}
+	if textColor == "" {
+		textColor = "#000000" // 黒
+	}
 	L0C := "#EBEDF0"
 	L1C := "#cc99ff"
 	L2C := "#9966cc"
@@ -39,12 +46,12 @@ func CreateSVG(arrayData [53][7]int, colorType string, bgColorType string) strin
 		L1C = "#ffcc66"
 		L2C = "#ffcc33"
 		L3C = "#cc9933"
-		L4C = "#cc9900"
+		L4C = "#977100"
 
 	case "green":
 		L0C = "#EBEDF0"
 		L1C = "#39d353"
-		L2C = "#6a641"
+		L2C = "#26a641"
 		L3C = "#006d32"
 		L4C = "#0e4429"
 
@@ -70,15 +77,6 @@ func CreateSVG(arrayData [53][7]int, colorType string, bgColorType string) strin
 		L4C = "#330066"
 	}
 
-	bgColor := "white"
-
-	switch bgColorType {
-	case "light":
-		bgColor = "#ffffff"
-
-	case "dark":
-		bgColor = "#333333"
-	}
 	// 歩数の閾値
 	L4 := 10000
 	L3 := 5000
@@ -128,7 +126,7 @@ func CreateSVG(arrayData [53][7]int, colorType string, bgColorType string) strin
 	// タイトル
 	title := "Step count"
 	svg += `
-		<text x="` + strconv.Itoa(mx) + `" y="` + strconv.Itoa(my) + `" font-family="Arial" font-size="20" fill="black" style="animation: scale 1s ease;">` + title + `</text>
+		<text x="` + strconv.Itoa(mx) + `" y="` + strconv.Itoa(my) + `" font-family="Arial" font-size="20" fill="` + textColor + `" style="animation: scale 1s ease;">` + title + `</text>
 	`
 	// 曜日
 	content := []string{"Mon", "Wed", "Fri"}
@@ -137,7 +135,7 @@ func CreateSVG(arrayData [53][7]int, colorType string, bgColorType string) strin
 		x := mx
 		y := py + fontSize + i*2*(width+blank) + width + blank
 		svg += `
-			<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="` + strconv.Itoa(fontSize) + `" fill="black" style="animation: scale 1s ease;">` + c + `</text>
+			<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="` + strconv.Itoa(fontSize) + `" fill="` + textColor + `" style="animation: scale 1s ease;">` + c + `</text>
 		`
 	}
 
@@ -174,7 +172,7 @@ func CreateSVG(arrayData [53][7]int, colorType string, bgColorType string) strin
 	for i, m := range months {
 		x := px + (width+blank)*i*53/12
 		y := py - 2
-		svg += `<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="12" fill="black" style="animation: scale 1s ease;">` + m + `</text>`
+		svg += `<text x="` + strconv.Itoa(x) + `" y="` + strconv.Itoa(y) + `" font-family="Arial" font-size="12" fill="` + textColor + `" style="animation: scale 1s ease;">` + m + `</text>`
 	}
 
 	// アニメーション
