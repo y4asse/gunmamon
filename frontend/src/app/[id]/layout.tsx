@@ -43,7 +43,7 @@ const Layout = async ({ children, params }: { children: React.ReactNode; params:
         </div>
       </div>
       {/* profile */}
-      <div className=" max-w-[900px] mx-auto mt-5">
+      <div className=" max-w-[900px] mx-auto mt-5 pb-10">
         {/*ProFile.tsxにコンポーネント化した部分 */}
         {/* <div className="flex justify-center items-center gap-5">
           <div>
