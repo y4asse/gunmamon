@@ -36,7 +36,12 @@ const Layout = async ({ children, params }: { children: React.ReactNode; params:
   }
 
   return (
-    <main className="bg-primary min-h-screen text-white px-2 py-5">
+    <main className="bg-primary min-h-screen text-white ">
+      <div className="">
+        <div className="bg-indigo-400">
+          <Tab id={params.id} user={user} />
+        </div>
+      </div>
       {/* profile */}
       <div className=" max-w-[900px] mx-auto mt-5">
         {/*ProFile.tsxにコンポーネント化した部分 */}
@@ -53,7 +58,7 @@ const Layout = async ({ children, params }: { children: React.ReactNode; params:
           </div>
         </div> */}
         {/* <Profile user={user} /> */}
-        <Tab id={params.id} user={user} />
+
         {children}
       </div>
     </main>
