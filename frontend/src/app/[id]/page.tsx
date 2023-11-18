@@ -86,7 +86,6 @@ const Page = async ({ params }: { params: { id: string } }) => {
           ]
           } width="50" height="50" />
           <div className="mb-5"></div>
-        </div> 
       </div>
     </>
   )
