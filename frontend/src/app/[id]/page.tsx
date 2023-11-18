@@ -1,8 +1,8 @@
 import Person from '@/components/animation/Camping';
 import React from 'react';
 
-const Step = ({ color, title, contents, width, height }) => {
-  const isImage = (url) => {
+const Step = ({ color, title, contents, width, height }: { color:any, title:any, contents:any, width:any, height:any }) => {
+  const isImage = (url: any) => {
     const extension = url.split('.').pop().toLowerCase();
     const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
     return imageExtensions.includes(extension);
@@ -14,11 +14,11 @@ const Step = ({ color, title, contents, width, height }) => {
     maxHeight: '100%',
   };
 
-  const DOMs = contents.map((item, index) => (
+  const DOMs = contents.map((item: any, index: any) => (
     <React.Fragment key={index}>
       {!isImage(item) ? (
         <div className="m-2 font-normal">
-          {item.split('<br>').map((sentence, index) => (
+          {item.split('<br>').map((sentence: any, index: any) => (
             <React.Fragment key={index}>
               {sentence}
               <br />
