@@ -59,6 +59,7 @@ func (controller *controller) SampleHandler(c echo.Context) error {
 func (controller *controller) IndexHandler(c echo.Context) error {
 	client := controller.client
 	userCollection := client.Database("Cluster0").Collection("User")
+	commitCollection := client.Database("Cluster0").Collection("Commit")
 	// パラメータの取得
 	id := c.QueryParam("id")
 	colorType := c.QueryParam("color_type")
@@ -72,9 +73,8 @@ func (controller *controller) IndexHandler(c echo.Context) error {
 	switch dataType {
 	case "step_count":
 		return StepCountHandler(id, c, userCollection, colorType, bgColor, textColor)
-		// TODO 心拍数の実装
-		// case "heart_beat":
-		// 	return HeartBeatHandler(id, c, userCollection, colorType)
+	case "commit":
+		return CommitHandler(id, c, commitCollection, colorType, bgColor, textColor)
 	}
 	return c.String(http.StatusBadRequest, "Bad Request")
 }
