@@ -15,9 +15,9 @@ export default function Home() {
             />
           </svg>
 
-          <h5 className="mb-1 text-xl font-bold text-gray-900 dark:text-white">ぐんまもんデラックス２</h5>
+          <h5 className="mb-1 text-xl font-bold text-gray-900 dark:text-white">GitActive</h5>
           <span className="text-sm text-gray-500 dark:text-gray-400 mb-5">
-            ログインするとぐんまもんが使えるようになります。
+            ログインするとGitActiveが使えるようになります。
           </span>
           <LoginButton />
           <span className="mt-6 mb-7">
