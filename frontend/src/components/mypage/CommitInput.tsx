@@ -25,24 +25,24 @@ const CommitInput = ({ id }: { id: string }) => {
   const [isOpenPicker, setIsOpenPicker] = useState<boolean>(false)
 
   // 絵文字ピッカーの枠外をクリックしたら閉じる
-  const useOutsideClick = (ref, callback) => {
+  const useOutsideClick = (ref: any, callback: any) => {
     useEffect(() => {
-      const handleClickOutside = (e) => {
+      const handleClickOutside = (e: any) => {
         if (ref.current && !ref.current.contains(e.target)) {
           callback()
         }
       }
-      document.addEventListener('click', handleClickOutside);
+      document.addEventListener('click', handleClickOutside)
       return () => {
-        document.removeEventListener('click', handleClickOutside);
-      };
-    }, [ref, callback]);
+        document.removeEventListener('click', handleClickOutside)
+      }
+    }, [ref, callback])
   }
-  const pickerRef = useRef();
+  const pickerRef = useRef(null)
 
   useOutsideClick(pickerRef, () => {
-    if(isOpenPicker) setIsOpenPicker(false);
-  });
+    if (isOpenPicker) setIsOpenPicker(false)
+  })
 
   const handleEmojiClick = (emoji: EmojiClickData) => {
     setEmojiData(emoji)
@@ -91,11 +91,11 @@ const CommitInput = ({ id }: { id: string }) => {
           <p className="bg-gray-100 py-1">絵文字を変更</p>
         </div>
         <div ref={pickerRef}>
-        {isOpenPicker && (
-          <div className="absolute right-1/2 translate-x-1/2 mt-5">
-            <Picker onEmojiClick={handleEmojiClick} />
-          </div>
-        )}
+          {isOpenPicker && (
+            <div className="absolute right-1/2 translate-x-1/2 mt-5">
+              <Picker onEmojiClick={handleEmojiClick} />
+            </div>
+          )}
         </div>
         <div className="">
           <label className="text-xl text-white p-1">タイトル</label>
