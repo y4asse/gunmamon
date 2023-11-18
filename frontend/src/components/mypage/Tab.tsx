@@ -19,7 +19,8 @@ const Tab: React.FC<TabProps> = ({ id, user }) => {
     { name: 'ホーム', href: `/${id}` },
     { name: 'URL作成', href: `/${id}/createURL` },
     { name: '記録する', href: `/${id}/commit` },
-    { name: '草を観る', href: `/${id}/kusa` }
+    { name: '草を観る', href: `/${id}/kusa` },
+    { name: '目標設定', href: `/${id}/goal` }
   ]
   const path = usePathname()
   return (
